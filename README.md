@@ -48,21 +48,24 @@ println!("{:?}",set_difficulty(Difficulty::Low(String::from("You think you're af
 ### 4. space seperated input
 takes
 ```rust
-use read_input::prelude::*;
-fn space_sep(mut max_number: i32) -> Vec<i32> {
-  input::<String>()
-    .get()
-    .split(" ")
-    .filter_map(|x| {
-      match x.parse::<i32>() {
-        Ok(num) => {
-          if max_number > 0 { max_number-=1; Some(num) }
-          else { None }
-        },
-        Err(_) => { None }
-      }
-    })
-    .collect()
+fn space_sep(mut max_number: usize) -> Vec<i32> {
+  let mut input = String::new();
+  io::stdin().read_line(& mut input).expect("invalid input");
+  input
+  .trim()
+  .split(" ")
+  .filter_map(|x| {
+    match x.parse::<i32>() {
+      Ok(num) => {
+        if max_number > 0 {
+          max_number-=1;
+          Some(num)
+        }
+        else { None }
+      },
+      Err(_) => { None }
+    }
+  }) .collect()
 }
 fn main(){
   let n = ask::<usize>("Enter a no: ");
