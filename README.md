@@ -74,19 +74,22 @@ fn main(){
 }
 ```
 
-### 5. prompt input
+### 5. number parser (error handled)
 ```rust
-use std::io::{self,Write};
-
-fn ask(question: &str) -> i32{
+use std::{
+  io::{self,Write},
+  str::FromStr,
+  fmt::Debug
+};
+fn ask<T>(question: &str) -> T where T: FromStr, <T as FromStr>::Err:Debug{
   loop {
     let mut input = String::new();
     print!("{question}");
     io::stdout().flush().unwrap();
     io::stdin().read_line(& mut input).expect("invalid input");
-    match input.trim().parse::<i32>() {
+    match input.trim().parse::<T>() {
       Ok(num) => {break num},
-      Err(e) => {eprintln!("try again: {:?}",e.kind());continue;}
+      Err(e) => {println!("try again: {:?}",e);continue;}
     }
   }
 }
@@ -96,4 +99,19 @@ fn main(){
   let y = ask("Enter 2nd number:");
   println!("{x} {y}");
 }
+```
+
+### 6. number parser (ttp)
+```rust
+use std::{
+  io::stdin,
+  str::FromStr,
+  fmt::Debug
+};
+fn ask<T>() -> T where T: FromStr, <T as FromStr>::Err:Debug{
+  let mut input = String::new();
+  io::stdin().read_line(& mut input).expect("invalid input");
+  input.trim().parse::<T>().unwrap()
+}
+let n = ask::<i32>();
 ```
