@@ -1,5 +1,5 @@
 # Rust Archive
-
+cargo-watch -cqx run
 ### 1. understanding the data ownership and borrowing
 ```rust
 fn return_length(s: &String) -> usize {  // s got ownership of "hello world"
