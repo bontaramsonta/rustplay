@@ -1,5 +1,6 @@
 // cargo watch -w src/main.rs -w in -cqs 'cargo -q run < in > out'
 use rust_play::*;
+use std::collections::HashMap;
 
 fn main() {
     let test_cases = get_input::<usize>().unwrap();
@@ -11,15 +12,18 @@ fn main() {
 fn solve(_a: usize) {
     println!("CASE: {_a}");
     // let str = get_input::<String>().unwrap();
-    let v = get_space_separated::<String>();
-    let result = final_value_after_operations(v);
+    let v = get_space_separated::<i32>();
+    let result = num_identical_pairs(v);
     println!("----------{_a} {result:#?}");
 }
 
-pub fn final_value_after_operations(operations: Vec<String>) -> i32 {
-    operations.iter().fold(0, |acc, x| match x.as_str() {
-        "++X" | "X++" => acc + 1,
-        "--X" | "X--" => acc - 1,
-        _ => acc,
-    })
+pub fn num_identical_pairs(nums: Vec<i32>) -> i32 {
+    let mut count_map = HashMap::new();
+    for num in nums {
+        let count = count_map.entry(num).or_insert(0);
+        *count += 1;
+    }
+    count_map
+        .values()
+        .fold(0, |acc, value| acc + ((value * (value - 1)) / 2))
 }
