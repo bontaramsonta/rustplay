@@ -10,23 +10,32 @@ fn main() {
 
 fn solve(_a: usize) {
     println!("CASE: {_a}");
-    // let str = get_input::<String>().unwrap();
-    let v = get_space_separated::<String>();
-    let result = longest_common_prefix(v);
+    let str = get_input::<String>().unwrap();
+    // let v = get_space_separated::<String>();
+    let result = is_valid(str);
     println!("----------{_a} {result:#?}");
 }
-pub fn longest_common_prefix(strs: Vec<String>) -> String {
-    let mut current_lcp = strs[0].clone();
-    for x in &strs[1..] {
-        loop {
-            if current_lcp.is_empty() {
-                return current_lcp;
-            } else if x.starts_with(&current_lcp) {
-                break;
-            } else {
-                current_lcp = current_lcp[..current_lcp.len() - 1].to_string();
+
+pub fn is_valid(s: String) -> bool {
+    let mut bracket_stack: Vec<char> = Vec::new();
+    for bracket in s.chars() {
+        match bracket {
+            '}' | ')' | ']' => {
+                if let Some(last_char) = bracket_stack.pop() {
+                    if !((last_char, bracket) == ('{', '}')
+                        || (last_char, bracket) == ('(', ')')
+                        || (last_char, bracket) == ('[', ']'))
+                    {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+            _ => {
+                bracket_stack.push(bracket);
             }
         }
     }
-    current_lcp
+    bracket_stack.is_empty()
 }
