@@ -10,15 +10,18 @@ fn main() {
 
 fn solve(_a: usize) {
     println!("CASE: {_a}");
-    let n = get_input::<i32>().unwrap();
-    let v = get_space_separated::<i32>();
-    let result = search_insert(v, n);
+    let s = get_input::<String>().unwrap();
+    // let v = get_space_separated::<i32>();
+    let result = length_of_last_word(s);
     println!("----------{_a} {result:#?}");
 }
 
-pub fn search_insert(nums: Vec<i32>, target: i32) -> i32 {
-    match nums.binary_search_by_key(&target, |&num| num) {
-        Ok(index) => index as i32,
-        Err(index) => index as i32,
-    }
+pub fn length_of_last_word(s: String) -> i32 {
+    s.trim_end()
+        .rsplit_once(' ')
+        .unwrap_or(("", &s.trim()))
+        .1
+        .len()
+        .try_into()
+        .unwrap()
 }
