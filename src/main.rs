@@ -10,32 +10,15 @@ fn main() {
 
 fn solve(_a: usize) {
     println!("CASE: {_a}");
-    let str = get_input::<String>().unwrap();
-    // let v = get_space_separated::<String>();
-    let result = is_valid(str);
+    let n = get_input::<i32>().unwrap();
+    let v = get_space_separated::<i32>();
+    let result = search_insert(v, n);
     println!("----------{_a} {result:#?}");
 }
 
-pub fn is_valid(s: String) -> bool {
-    let mut bracket_stack: Vec<char> = Vec::new();
-    for bracket in s.chars() {
-        match bracket {
-            '}' | ')' | ']' => {
-                if let Some(last_char) = bracket_stack.pop() {
-                    if !((last_char, bracket) == ('{', '}')
-                        || (last_char, bracket) == ('(', ')')
-                        || (last_char, bracket) == ('[', ']'))
-                    {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            }
-            _ => {
-                bracket_stack.push(bracket);
-            }
-        }
+pub fn search_insert(nums: Vec<i32>, target: i32) -> i32 {
+    match nums.binary_search_by_key(&target, |&num| num) {
+        Ok(index) => index as i32,
+        Err(index) => index as i32,
     }
-    bracket_stack.is_empty()
 }
