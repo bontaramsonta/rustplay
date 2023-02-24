@@ -10,18 +10,26 @@ fn main() {
 
 fn solve(_a: usize) {
     println!("CASE: {_a}");
-    let s = get_input::<String>().unwrap();
-    // let v = get_space_separated::<i32>();
-    let result = length_of_last_word(s);
-    println!("----------{_a} {result:#?}");
+    // let n = get_input::<usize>().unwrap();
+    let v = get_space_separated::<i32>();
+    let result = plus_one(v);
+    println!("---------- {result:#?}");
 }
 
-pub fn length_of_last_word(s: String) -> i32 {
-    s.trim_end()
-        .rsplit_once(' ')
-        .unwrap_or(("", &s.trim()))
-        .1
-        .len()
-        .try_into()
-        .unwrap()
+pub fn plus_one(digits: Vec<i32>) -> Vec<i32> {
+    let mut carry: i32 = 1;
+    let mut digits = digits
+        .iter()
+        .rev()
+        .map(|x| {
+            let temp = *x + carry;
+            carry = temp / 10;
+            temp % 10
+        })
+        .collect::<Vec<i32>>();
+    if carry != 0 {
+        digits.push(carry);
+    }
+    digits.reverse();
+    digits
 }
