@@ -1,5 +1,3 @@
-use std::cmp::max;
-
 // cargo watch -w src/main.rs -w in -cqs 'cargo -q run < in > out'
 use rust_play::*;
 
@@ -19,13 +17,12 @@ fn solve(_a: usize) {
 }
 
 pub fn max_profit(prices: Vec<i32>) -> i32 {
-    let mut minimum = prices[0];
-    let mut maximum_profit = 0;
-    for price in prices {
-        if price < minimum {
-            minimum = price;
+    prices.windows(2).fold(0, |profit, prize_window| {
+        let current_prize = prize_window.get(0).unwrap();
+        let next_prize = prize_window.get(1).unwrap();
+        match current_prize.cmp(&next_prize) {
+            std::cmp::Ordering::Less => profit + (next_prize - current_prize),
+            _ => profit,
         }
-        maximum_profit = max(maximum_profit, price - minimum);
-    }
-    maximum_profit
+    })
 }
