@@ -23,8 +23,8 @@ pub fn max_profit(prices: Vec<i32>) -> i32 {
     let reverse_iter = prices.iter().rev();
     let (minima, maxima) = forward_iter
         .zip(reverse_iter)
-        .enumerate()
-        .fold(0, |acc, (i, forward_ele, rev_ele)| {})
+        .take((prices.len() as i32 / 2).try_into().unwrap())
+        .reduce(|acc, p| (min(acc.0, p.0), max(acc.1, p.1)))
         .unwrap();
     maxima - minima
 }
