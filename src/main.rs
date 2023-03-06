@@ -12,16 +12,22 @@ fn solve(_a: usize) {
     println!("CASE: {_a}");
     // let jewels = get_input::<String>().unwrap();
     // let stone = get_input::<String>().unwrap();
-    let v = get_space_separated::<String>();
-    let result = num_jewels_in_stones(v[0].to_owned(), v[1].to_owned());
+    let v = get_space_separated::<i32>();
+    let result = smaller_numbers_than_current(v);
     println!("---------- {result:#?}");
 }
 
-pub fn num_jewels_in_stones(jewels: String, stones: String) -> i32 {
-    stones
-        .chars()
-        .fold(0, |acc, stone| match jewels.contains(stone) {
-            true => acc + 1,
-            false => acc,
+pub fn smaller_numbers_than_current(nums: Vec<i32>) -> Vec<i32> {
+    nums.iter()
+        .enumerate()
+        .map(|(i, number)| {
+            nums.iter().enumerate().skip_while(|(j, _)| *j == i).fold(
+                0,
+                |acc, (_, other_number)| match number.cmp(&other_number) {
+                    std::cmp::Ordering::Greater => acc + 1,
+                    _ => acc,
+                },
+            )
         })
+        .collect()
 }
