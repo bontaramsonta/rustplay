@@ -10,18 +10,18 @@ fn main() {
 
 fn solve(_a: usize) {
     println!("CASE: {_a}");
-    let n = get_input::<i32>().unwrap();
-    // let nums = get_space_separated::<i32>();
-    let result = climb_stairs(n);
+    // let jewels = get_input::<String>().unwrap();
+    // let stone = get_input::<String>().unwrap();
+    let v = get_space_separated::<String>();
+    let result = num_jewels_in_stones(v[0].to_owned(), v[1].to_owned());
     println!("---------- {result:#?}");
 }
 
-pub fn climb_stairs(n: i32) -> i32 {
-    let (mut a, mut b) = (1, 1);
-    for _ in 1..n {
-        let sum = a + b;
-        b = a;
-        a = sum;
-    }
-    a
+pub fn num_jewels_in_stones(jewels: String, stones: String) -> i32 {
+    stones
+        .chars()
+        .fold(0, |acc, stone| match jewels.contains(stone) {
+            true => acc + 1,
+            false => acc,
+        })
 }
