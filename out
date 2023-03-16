@@ -1,27 +1,59 @@
 CASE: 0
-TreeNode {
-    val: 1,
-    left: None,
-    right: Some(
-        RefCell {
-            value: TreeNode {
-                val: 2,
-                left: Some(
-                    RefCell {
-                        value: TreeNode {
-                            val: 3,
-                            left: None,
-                            right: None,
-                        },
-                    },
-                ),
-                right: None,
-            },
-        },
-    ),
-}
----------- [
+root 1 in[
+    3,
+    2,
     1,
+] post[
+    3,
+    2,
+    1,
+]
+left in[
+    3,
+    2,
+] post[
     3,
     2,
 ]
+root 2 in[
+    3,
+    2,
+] post[
+    3,
+    2,
+]
+left in[
+    3,
+] post[
+    3,
+]
+root 3 in[
+    3,
+] post[
+    3,
+]
+---------- Some(
+    RefCell {
+        value: TreeNode {
+            val: 1,
+            left: Some(
+                RefCell {
+                    value: TreeNode {
+                        val: 2,
+                        left: Some(
+                            RefCell {
+                                value: TreeNode {
+                                    val: 3,
+                                    left: None,
+                                    right: None,
+                                },
+                            },
+                        ),
+                        right: None,
+                    },
+                },
+            ),
+            right: None,
+        },
+    },
+)

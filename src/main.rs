@@ -31,37 +31,40 @@ fn main() {
 fn solve(_a: usize) {
     println!("CASE: {_a}");
     // let n = get_input::<i32>().unwrap();
-    // let mut v1 = get_space_separated::<i32>();
-    let root = TreeNode {
-        val: 1,
-        left: None,
-        right: Some(Rc::new(RefCell::new(TreeNode {
-            val: 2,
-            left: Some(Rc::new(RefCell::new(TreeNode {
-                val: 3,
-                left: None,
-                right: None,
-            }))),
-            right: None,
-        }))),
-    };
-    println!("{root:#?}");
-    let result = inorder_traversal(Some(Rc::new(RefCell::new(root))));
+    let inorder = get_space_separated::<i32>();
+    let postorder = get_space_separated::<i32>();
+    let result = build_tree(inorder, postorder);
     println!("---------- {result:#?}");
 }
 
-pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-    let mut result: Vec<i32> = Vec::new();
-    let root = match root {
-        Some(node) => node,
-        None => return result,
+pub fn build_tree(inorder: Vec<i32>, postorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
+    let root_element = postorder.last()?;
+    println!("root {root_element} in{inorder:#?} post{postorder:#?}");
+    let root_idx_in_inorder = inorder
+        .iter()
+        .position(|e| e == root_element)
+        .expect("root element not found");
+    let left_inorder = &inorder[..root_idx_in_inorder];
+    let right_inorder = &inorder[root_idx_in_inorder + 1..];
+
+    let left = if !left_inorder.is_empty() {
+        let left_postorder = &postorder[..left_inorder.len()];
+        println!("left in{left_inorder:#?} post{left_postorder:#?}");
+        build_tree(left_inorder.to_vec(), left_postorder.to_vec())
+    } else {
+        None
     };
-    if let Some(left) = root.borrow_mut().left.take() {
-        result.append(&mut inorder_traversal(Some(left)))
-    }
-    result.push(root.borrow().val);
-    if let Some(right) = root.borrow_mut().right.take() {
-        result.append(&mut inorder_traversal(Some(right)))
-    }
-    result
+    let right = if !right_inorder.is_empty() {
+        dbg!(left_inorder.len());
+        let right_postorder = &postorder[left_inorder.len()..(postorder.len() - 1)];
+        println!("right in{right_inorder:#?} post{right_postorder:#?}");
+        build_tree(right_inorder.to_vec(), right_postorder.to_vec())
+    } else {
+        None
+    };
+    Some(Rc::new(RefCell::new(TreeNode {
+        val: root_element.to_owned(),
+        left,
+        right,
+    })))
 }
