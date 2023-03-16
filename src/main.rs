@@ -1,5 +1,25 @@
 // cargo watch -w src/main.rs -w in -cqs 'cargo -q run < in > out'
 use rust_play::*;
+use std::cell::RefCell;
+use std::rc::Rc;
+// Definition for a binary tree node.
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
+}
+
+impl TreeNode {
+    #[inline]
+    pub fn new(val: i32) -> Self {
+        TreeNode {
+            val,
+            left: None,
+            right: None,
+        }
+    }
+}
 
 fn main() {
     let test_cases = get_input::<usize>().unwrap();
@@ -10,38 +30,38 @@ fn main() {
 
 fn solve(_a: usize) {
     println!("CASE: {_a}");
-    let n = get_input::<i32>().unwrap();
-    let m = get_input::<i32>().unwrap();
-    let mut v1 = get_space_separated::<i32>();
-    let mut v2 = get_space_separated::<i32>();
-    let result = merge(&mut v1, m, &mut v2, n);
+    // let n = get_input::<i32>().unwrap();
+    // let mut v1 = get_space_separated::<i32>();
+    let root = TreeNode {
+        val: 1,
+        left: None,
+        right: Some(Rc::new(RefCell::new(TreeNode {
+            val: 2,
+            left: Some(Rc::new(RefCell::new(TreeNode {
+                val: 3,
+                left: None,
+                right: None,
+            }))),
+            right: None,
+        }))),
+    };
+    println!("{root:#?}");
+    let result = inorder_traversal(Some(Rc::new(RefCell::new(root))));
     println!("---------- {result:#?}");
 }
 
-pub fn merge(nums1: &mut Vec<i32>, m: i32, nums2: &mut Vec<i32>, n: i32) {
+pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     let mut result: Vec<i32> = Vec::new();
-    let mut i = 0;
-    let mut j = 0;
-    while i < m && j < n {
-        let val1 = nums1[i as usize];
-        let val2 = nums2[j as usize];
-        result.push(match val1.cmp(&val2) {
-            std::cmp::Ordering::Equal | std::cmp::Ordering::Less => {
-                i += 1;
-                val1
-            }
-            std::cmp::Ordering::Greater => {
-                j += 1;
-                val2
-            }
-        });
+    let root = match root {
+        Some(node) => node,
+        None => return result,
+    };
+    if let Some(left) = root.borrow_mut().left.take() {
+        result.append(&mut inorder_traversal(Some(left)))
     }
-    if i < m {
-        result.extend_from_slice(&nums1[(i as usize)..]);
+    result.push(root.borrow().val);
+    if let Some(right) = root.borrow_mut().right.take() {
+        result.append(&mut inorder_traversal(Some(right)))
     }
-    if j < n {
-        result.extend_from_slice(&nums2[(j as usize)..]);
-    }
-    *nums1 = result;
-    nums1.iter().for_each(|r| println!("{r}"))
+    result
 }
