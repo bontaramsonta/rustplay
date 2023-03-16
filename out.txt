@@ -1,0 +1,32 @@
+[1, 5, 8] [2, 2, 9]
+Some(
+    ListNode {
+        val: 1,
+        next: Some(
+            ListNode {
+                val: 2,
+                next: Some(
+                    ListNode {
+                        val: 2,
+                        next: Some(
+                            ListNode {
+                                val: 5,
+                                next: Some(
+                                    ListNode {
+                                        val: 8,
+                                        next: Some(
+                                            ListNode {
+                                                val: 9,
+                                                next: None,
+                                            },
+                                        ),
+                                    },
+                                ),
+                            },
+                        ),
+                    },
+                ),
+            },
+        ),
+    },
+)

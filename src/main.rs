@@ -1,24 +1,10 @@
-// cargo watch -w src/main.rs -w in -cqs 'cargo -q run < in > out'
+// cargo watch -w src/main.rs -w in.txt -cqs 'cargo -q run < in.txt > out.txt'
 use rust_play::*;
-use std::cell::RefCell;
-use std::rc::Rc;
-// Definition for a binary tree node.
-#[derive(Debug, PartialEq, Eq)]
-pub struct TreeNode {
+// Definition for singly-linked list.
+#[derive(PartialEq, Eq, Clone, Debug)]
+pub struct ListNode {
     pub val: i32,
-    pub left: Option<Rc<RefCell<TreeNode>>>,
-    pub right: Option<Rc<RefCell<TreeNode>>>,
-}
-
-impl TreeNode {
-    #[inline]
-    pub fn new(val: i32) -> Self {
-        TreeNode {
-            val,
-            left: None,
-            right: None,
-        }
-    }
+    pub next: Option<Box<ListNode>>,
 }
 
 fn main() {
@@ -28,43 +14,71 @@ fn main() {
     }
 }
 
-fn solve(_a: usize) {
-    println!("CASE: {_a}");
-    // let n = get_input::<i32>().unwrap();
-    let inorder = get_space_separated::<i32>();
-    let postorder = get_space_separated::<i32>();
-    let result = build_tree(inorder, postorder);
-    println!("---------- {result:#?}");
+impl ListNode {
+    #[inline]
+    fn new(val: i32) -> Self {
+        ListNode { next: None, val }
+    }
+    fn from(v: Vec<i32>) -> Option<Box<ListNode>> {
+        let mut current: Option<Box<ListNode>> = None;
+        for x in v.iter().rev() {
+            let mut node = ListNode::new(*x);
+            node.next = current;
+            current = Some(Box::new(node))
+        }
+        current
+    }
+    #[allow(dead_code)]
+    fn delete_duplicate(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        if head.is_none() {
+            return None;
+        }
+        let mut h = head;
+        let mut current = h.as_mut().unwrap();
+        while let Some(next_node) = current.next.as_mut() {
+            if current.val == next_node.val {
+                current.next = next_node.next.take();
+            } else {
+                current = current.next.as_mut().unwrap();
+            }
+        }
+        h
+    }
+    fn merge(first: Option<Box<ListNode>>, second: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut dummy = ListNode::new(0);
+        let mut current = &mut dummy;
+        let (mut first, mut second) = (first.as_deref(), second.as_deref());
+
+        while let (Some(p1), Some(p2)) = (first, second) {
+            if p1.val <= p2.val {
+                current.next = Some(Box::new(ListNode::new(p1.val)));
+                first = p1.next.as_deref();
+            } else {
+                current.next = Some(Box::new(ListNode::new(p2.val)));
+                second = p2.next.as_deref();
+            }
+            current = current.next.as_mut().unwrap();
+        }
+
+        if let Some(p1) = first {
+            current.next = Some(Box::new(p1.clone()));
+        }
+
+        if let Some(p2) = second {
+            current.next = Some(Box::new(p2.clone()));
+        }
+
+        dummy.next
+    }
 }
 
-pub fn build_tree(inorder: Vec<i32>, postorder: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
-    let root_element = postorder.last()?;
-    println!("root {root_element} in{inorder:#?} post{postorder:#?}");
-    let root_idx_in_inorder = inorder
-        .iter()
-        .position(|e| e == root_element)
-        .expect("root element not found");
-    let left_inorder = &inorder[..root_idx_in_inorder];
-    let right_inorder = &inorder[root_idx_in_inorder + 1..];
-
-    let left = if !left_inorder.is_empty() {
-        let left_postorder = &postorder[..left_inorder.len()];
-        println!("left in{left_inorder:#?} post{left_postorder:#?}");
-        build_tree(left_inorder.to_vec(), left_postorder.to_vec())
-    } else {
-        None
-    };
-    let right = if !right_inorder.is_empty() {
-        dbg!(left_inorder.len());
-        let right_postorder = &postorder[left_inorder.len()..(postorder.len() - 1)];
-        println!("right in{right_inorder:#?} post{right_postorder:#?}");
-        build_tree(right_inorder.to_vec(), right_postorder.to_vec())
-    } else {
-        None
-    };
-    Some(Rc::new(RefCell::new(TreeNode {
-        val: root_element.to_owned(),
-        left,
-        right,
-    })))
+fn solve(_test_case: usize) -> () {
+    let v1 = get_space_separated::<i32>();
+    let v2 = get_space_separated::<i32>();
+    println!("{v1:?} {v2:?}");
+    let first = ListNode::from(v1);
+    let second = ListNode::from(v2);
+    // let de_duped = ListNode::delete_duplicate(head);
+    let result = ListNode::merge(first, second);
+    println!("{result:#?}");
 }
