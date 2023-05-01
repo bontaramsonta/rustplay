@@ -31,11 +31,16 @@ fn solve(_a: usize) {
     println!("CASE: {_a}");
     let root = TreeNode::new(
         1,
-        Some(Rc::new(RefCell::new(TreeNode::new(2, None, None)))),
-        Some(Rc::new(RefCell::new(TreeNode::new(2, None, None)))),
+        Some(Rc::new(RefCell::new(TreeNode::new(
+            2,
+            Some(Rc::new(RefCell::new(TreeNode::new(2, None, None)))),
+            None,
+        )))),
+        None,
     );
     // dbg!(root);
-    dbg!(is_symmetric(Some(Rc::new(RefCell::new(root)))));
+    // dbg!(is_symmetric(Some(Rc::new(RefCell::new(root)))));
+    dbg!(max_depth(Some(Rc::new(RefCell::new(root)))));
 }
 
 fn is_symmetric(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
@@ -59,5 +64,16 @@ fn is_mirror(t1: Option<&Rc<RefCell<TreeNode>>>, t2: Option<&Rc<RefCell<TreeNode
                 && is_mirror(t1.right.as_ref(), t2.left.as_ref())
         }
         _ => false,
+    }
+}
+
+fn max_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    match root {
+        Some(_) => {
+            let root = root.unwrap();
+            let root = root.borrow();
+            1 + max_depth(root.left.clone()).max(max_depth(root.right.clone()))
+        }
+        None => 0,
     }
 }
