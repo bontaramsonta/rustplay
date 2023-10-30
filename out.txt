@@ -1,32 +1,60 @@
-[1, 5, 8] [2, 2, 9]
-Some(
-    ListNode {
-        val: 1,
-        next: Some(
-            ListNode {
-                val: 2,
-                next: Some(
-                    ListNode {
-                        val: 2,
-                        next: Some(
-                            ListNode {
-                                val: 5,
-                                next: Some(
-                                    ListNode {
-                                        val: 8,
-                                        next: Some(
-                                            ListNode {
-                                                val: 9,
-                                                next: None,
-                                            },
-                                        ),
-                                    },
-                                ),
-                            },
-                        ),
-                    },
-                ),
-            },
-        ),
-    },
-)
+CASE: 1
+[src/main.rs:43] n = 1
+[src/main.rs:43] result = 0
+CASE: 2
+[src/main.rs:43] n = 2
+[src/main.rs:43] result = 1
+CASE: 3
+[src/main.rs:43] n = 3
+[src/main.rs:43] result = 1
+CASE: 4
+[src/main.rs:43] n = 4
+[src/main.rs:43] result = 2
+CASE: 5
+[src/main.rs:43] n = 5
+[src/main.rs:43] result = 3
+CASE: 6
+[src/main.rs:43] n = 6
+[src/main.rs:43] result = 5
+CASE: 7
+[src/main.rs:43] n = 7
+[src/main.rs:43] result = 8
+CASE: 8
+[src/main.rs:43] n = 8
+[src/main.rs:43] result = 13
+CASE: 9
+[src/main.rs:43] n = 9
+[src/main.rs:43] result = 21
+CASE: 10
+[src/main.rs:43] n = 11
+[src/main.rs:43] result = 55
+CASE: 11
+[src/main.rs:43] n = 12
+[src/main.rs:43] result = 89
+CASE: 12
+[src/main.rs:43] n = 13
+[src/main.rs:43] result = 144
+CASE: 13
+[src/main.rs:43] n = 14
+[src/main.rs:43] result = 233
+CASE: 14
+[src/main.rs:43] n = 15
+[src/main.rs:43] result = 377
+CASE: 15
+[src/main.rs:43] n = 16
+[src/main.rs:43] result = 610
+CASE: 16
+[src/main.rs:43] n = 17
+[src/main.rs:43] result = 987
+CASE: 17
+[src/main.rs:43] n = 18
+[src/main.rs:43] result = 1597
+CASE: 18
+[src/main.rs:43] n = 19
+[src/main.rs:43] result = 2584
+CASE: 19
+[src/main.rs:43] n = 20
+[src/main.rs:43] result = 4181
+CASE: 20
+[src/main.rs:43] n = 80
+[src/main.rs:43] result = 14472334024676221
