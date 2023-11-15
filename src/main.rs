@@ -35,16 +35,45 @@ pub fn min_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     }
 }
 
+pub fn has_path_sum(root: Option<Rc<RefCell<TreeNode>>>, target_sum: i32) -> bool {
+    match root {
+        None => target_sum == 0,
+        Some(node) => {
+            let node = node.borrow();
+            let new_target = target_sum - node.val;
+            match new_target.ge(&0) {
+                true => {
+                    has_path_sum(node.left.clone(), new_target)
+                        || has_path_sum(node.right.clone(), new_target)
+                }
+                false => false,
+            }
+        }
+    }
+}
+
 fn main() {
     let root = TreeNode::new(
-        3,
-        Some(Rc::new(RefCell::new(TreeNode::new(9, None, None)))),
+        5,
         Some(Rc::new(RefCell::new(TreeNode::new(
-            20,
-            Some(Rc::new(RefCell::new(TreeNode::new(15, None, None)))),
-            Some(Rc::new(RefCell::new(TreeNode::new(7, None, None)))),
+            4,
+            Some(Rc::new(RefCell::new(TreeNode::new(
+                11,
+                Some(Rc::new(RefCell::new(TreeNode::new(7, None, None)))),
+                Some(Rc::new(RefCell::new(TreeNode::new(2, None, None)))),
+            )))),
+            None,
+        )))),
+        Some(Rc::new(RefCell::new(TreeNode::new(
+            8,
+            Some(Rc::new(RefCell::new(TreeNode::new(13, None, None)))),
+            Some(Rc::new(RefCell::new(TreeNode::new(
+                4,
+                None,
+                Some(Rc::new(RefCell::new(TreeNode::new(1, None, None)))),
+            )))),
         )))),
     );
-    let result = min_depth(Some(Rc::new(RefCell::new(root))));
+    let result = has_path_sum(Some(Rc::new(RefCell::new(root))), 23);
     println!("result = {:?}", result);
 }
