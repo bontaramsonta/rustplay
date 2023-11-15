@@ -1,64 +1,50 @@
-struct Rectangle {
-    x: i32,
-    y: i32,
-    height: u32,
-    width: u32,
-}
-trait Area {
-    fn area(&self) -> u32;
+use std::cell::RefCell;
+use std::rc::Rc;
+
+#[derive(Debug, PartialEq, Eq)]
+pub struct TreeNode {
+    pub val: i32,
+    pub left: Option<Rc<RefCell<TreeNode>>>,
+    pub right: Option<Rc<RefCell<TreeNode>>>,
 }
 
-impl Rectangle {
-    fn new(height: u32, width: u32) -> Rectangle {
-        Rectangle {
-            x: 0,
-            y: 0,
-            height,
-            width,
+impl TreeNode {
+    #[inline]
+    pub fn new(
+        val: i32,
+        left: Option<Rc<RefCell<TreeNode>>>,
+        right: Option<Rc<RefCell<TreeNode>>>,
+    ) -> Self {
+        TreeNode { val, left, right }
+    }
+}
+
+pub fn min_depth(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
+    match root {
+        None => 0,
+        Some(node) => {
+            let node = node.borrow();
+            let left_depth = min_depth(node.left.clone());
+            let right_depth = min_depth(node.right.clone());
+            1 + if left_depth == 0 || right_depth == 0 {
+                left_depth.max(right_depth)
+            } else {
+                left_depth.min(right_depth)
+            }
         }
     }
-    fn square(size: u32) -> Rectangle {
-        Rectangle::new(size, size)
-    }
-    fn can_hold(&self, other: &Rectangle) -> bool {
-        self.height >= other.height && self.width >= other.width
-    }
-    fn contains(&self, other: &Rectangle) -> bool {
-        self.x <= other.x
-            && self.y <= other.y
-            && (self.x as i32 + self.width as i32) >= (other.x as i32 + other.width as i32)
-            && (self.y as i32 + self.height as i32) >= (other.y as i32 + other.height as i32)
-    }
-    fn get_coords(&self) -> (i32, i32) {
-        (self.x, self.y)
-    }
-    fn set_coords(&mut self, coords: (i32, i32)) {
-        self.x = coords.0;
-        self.y = coords.1;
-    }
 }
 
-impl Area for Rectangle {
-    fn area(&self) -> u32 {
-        self.height * self.width
-    }
-}
 fn main() {
-    let mut rect1 = Rectangle::new(20, 20);
-    // get coords
-    let (mut x, mut y) = rect1.get_coords();
-    // update coords
-    x += -20;
-    y += -20;
-    rect1.set_coords((x, y));
-    let (x, y) = rect1.get_coords();
-    dbg!(x, y);
-    // create a square
-    let square = Rectangle::square(10);
-    // can rect1 hold square?
-    let can_hold = rect1.can_hold(&square);
-    assert_eq!(can_hold, true, "rect1 can hold square");
-    // does rect1 contain square?
-    let contains = rect1.contains(&square);
-    assert_eq!(contains, true, "rect1 contains square");
+    let root = TreeNode::new(
+        3,
+        Some(Rc::new(RefCell::new(TreeNode::new(9, None, None)))),
+        Some(Rc::new(RefCell::new(TreeNode::new(
+            20,
+            Some(Rc::new(RefCell::new(TreeNode::new(15, None, None)))),
+            Some(Rc::new(RefCell::new(TreeNode::new(7, None, None)))),
+        )))),
+    );
+    let result = min_depth(Some(Rc::new(RefCell::new(root))));
+    println!("result = {:?}", result);
 }
